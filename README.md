@@ -10,7 +10,7 @@ UniTempl 是一款简洁、轻量的javascript 模版引擎。
 ```html 
 <script type="text/html" id="template2">
 <div>	
-	姓名：<label attr-sid="this.sid" content="this.name"></label><br/>
+	姓名：<label sid="this.sid" content="this.name"></label><br/>
 	年龄：<label content="this.age"></label>	<span style="margin-left:5px;" if="this.age>=18">成年人</span><br/>
 	性别：<label content="this.sex"></label><br/>
 	爱好：<ul><li earch="item in this.likes"><label content="item"></label></li></ul>
