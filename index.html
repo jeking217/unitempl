@@ -1,0 +1,99 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UniTempl Demo</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<script src="jquery-1.12.4.js"></script>    
+<script src="src/unitempl.js"></script> 
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+		
+		var props={
+			sid:11111,
+			name:'张三',
+			sex:'男',
+			age:16,
+			likes:['阅读','绘画','摄影']
+		}
+		var props2={
+			sid:22222,
+			name:'李四',
+			sex:'女',
+			age:21,
+			likes:['阅读','绘画','摄影','上网']
+		}
+		
+		$('#template').UniTempl(props).to('#demo1');
+		$('#template').UniTempl(props2).to('#demo2');
+		
+		var multData={
+			sid:33333,
+			name:'张三',
+			sex:'男',
+			age:16,
+			likes:['阅读','绘画','摄影'],
+			books:[
+				{name:'java 基础入门',price:21,publish:'xxx出版社'},
+				{name:'spark 基础入门',price:76,publish:'yyy出版社'}
+			]
+		}
+		
+		$('#template2').UniTempl(multData).to('#demo3');
+		
+		//alert($('[attr-sid]',$('#template')).length);
+		//alert($(':contains(this.)',$('#demo4')).length);
+		
+	});
+
+</script>
+
+</head>
+
+<body >
+
+<script type="text/html" id="template">
+<div>	
+	姓名：<label sid="this.sid" content="this.name"></label><br/>
+	年龄：<label content="this.age"></label>	<span style="margin-left:5px;" if="this.age>=18">成年人</span><br/>
+	性别：<label content="this.sex"></label><br/>
+	爱好：<ul><li earch="item in this.likes"><label content="item"></label></li></ul>
+</div>
+</script>
+<script type="text/html" id="template2">
+<div>	
+	姓名：<label attr-sid="this.sid" content="this.name"></label><br/>
+	年龄：<label content="this.age"></label>	<span style="margin-left:5px;" if="this.age>=18">成年人</span><br/>
+	性别：<label content="this.sex"></label><br/>
+	爱好：<ul><li earch="item in this.likes"><label content="item"></label></li></ul>
+	
+	书籍：<ul>
+			<li earch="book in this.books">
+				序号:<label content="book._index"></label>&nbsp;&nbsp;
+				书名：<label content="book.name"></label>&nbsp;&nbsp;
+				价格：<label content="book.price"></label>&nbsp;&nbsp; <label if="book.price>50" style="color:red;">好贵啊</label>
+				出版社：<label content="book.publish"></label>
+			</li>
+		</ul>
+</div>
+</script>
+<br/><br/>
+<hr>
+<div id="demo1"></div>
+<hr>
+<div id="demo2"></div>
+<hr>
+<div id="demo3"></div>
+
+
+</body>
+
+</html>
+
