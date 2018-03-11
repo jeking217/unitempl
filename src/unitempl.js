@@ -16,6 +16,9 @@
 		
 		this.innerAttrs=['content','text','src','href','id','sid','title','alt','class','css','target','name'];
 		
+		this.funCache=$(template).data('funCache') || {};
+		$(template).data('funCache',this.funCache);
+		
 		this.parse();
 		
 	}
@@ -148,7 +151,9 @@
     			exp=exp.replace('this.','data.');
     			scope='data';
     		}
-    		var ifFun=new Function(scope,'return '+exp);
+    		var ifFun=$this.funCache[scope+'_iffun_'+exp] ||  new Function(scope,'return '+exp);
+    		$this.funCache[scope+'_iffun_'+exp]=ifFun;
+    		
     		var flag=ifFun.call($this,data);
     		if(!flag){
     			$(target).remove();
@@ -188,7 +193,7 @@
     			return;
     		}
     		
-    		var eachFun=new Function('element',valname,
+    		var eachFun=$this.funCache[scope+'_eachfun_'+exp] ||  new Function('element',valname,
     			'for(var i=0;i<'+valname+'.length;i++){'+
     				'var target=element.clone();element.before(target);'+
     				''+valname+'[i]._index=i;'+
@@ -198,6 +203,8 @@
     				'this.runEach(target,"'+varname+'",'+valname+'[i]);'+
     			'}'
     		);
+    		$this.funCache[scope+'_eachfun_'+exp]=eachFun;
+    		
     		eachFun.call($this,$(target),data[valname]);
     		$(target).remove();
     	}
