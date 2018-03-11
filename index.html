@@ -60,16 +60,16 @@
 <body >
 
 <script type="text/html" id="template">
-<div>	
-	姓名：<label sid="this.sid" content="this.name"></label><br/>
+<div sid="this.sid" attr="uname:this.name,sex:this.sex">	
+	姓名：<label text="this.name"></label><br/>
 	年龄：<label content="this.age"></label>	<span style="margin-left:5px;" if="this.age>=18">成年人</span><br/>
 	性别：<label content="this.sex"></label><br/>
 	爱好：<ul><li earch="item in this.likes"><label content="item"></label></li></ul>
 </div>
 </script>
 <script type="text/html" id="template2">
-<div>	
-	姓名：<label sid="this.sid" content="this.name"></label><br/>
+<div sid="this.sid" >	
+	姓名：<label content="this.name"></label><br/>
 	年龄：<label content="this.age"></label>	<span style="margin-left:5px;" if="this.age>=18">成年人</span><br/>
 	性别：<label content="this.sex"></label><br/>
 	爱好：<ul><li earch="item in this.likes"><label content="item"></label></li></ul>

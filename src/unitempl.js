@@ -29,6 +29,9 @@
     	// 输出 this.属性 的value
     	this.runWrite(this.template,'this',this.props);
     	
+    	// 输出 this. 属性的 attr
+    	this.runAttr(this.template,'this',this.props);
+    	
     	// 处理 each 表达式
     	this.runEach(this.template,'this',this.props);
     	
@@ -45,6 +48,16 @@
     		attrMap[attr]=true;
     	}
     	
+    	// 处理当前标签
+		var attrs=$(element)[0].attributes;
+		$(attrs).each(function(i,attr){
+			if(attrMap[attr.name] && attr.value){
+				var filedName=attr.value.replace(scope+'.','');
+				process(element,attr.name,filedName);
+			}
+		});
+    	
+		// 处理下级标签
     	$(express,element).each(function(){
     		var target=$(this);
     		var attrs=$(this)[0].attributes;
@@ -57,6 +70,7 @@
     	});
     	
     	function process(target,attrName,fieldName){
+    		$(target).removeAttr(attrName);
     		if(typeof data === 'object'){
     			if(attrName=='content'){
     				$(target).html(data[fieldName]);
@@ -74,7 +88,40 @@
     				$(target).attr(attrName,data);
     			}
     		}
-    		$(target).removeAttr(attrName);
+    	}
+    	
+    	return this;
+    }
+    
+    UniTempl.prototype.runAttr=function(element,scope,data){
+    	var $this=this;
+    	
+    	// 处理当前标签
+    	process(element);
+    	
+    	// 处理下级标签
+    	var express='[attr*='+scope+']';
+    	$(express,element).each(function(){
+    		process(this);
+    	});
+    	
+    	function process(target){
+    		var attrs=$(target).attr('attr');
+    		if(!attrs){
+    			return;
+    		}
+    		$(target).removeAttr('attr');
+    		attrs=attrs.split(',');
+    		for(var i in attrs){
+    			var attr=attrs[i].split(':');
+    			var attrName=attr[0];
+    			var fieldName=attr[1].replace(scope+'.','');
+    			if(typeof data === 'object'){
+    				$(target).attr(attrName,data[fieldName]);
+    			}else{
+    				$(target).attr(attrName,data);
+    			}
+    		}
     	}
     	
     	return this;
@@ -82,9 +129,21 @@
     
     UniTempl.prototype.runIf=function(element,scope,data){
     	var $this=this;
+    	
+    	// 处理当前标签
+    	process(element);
+    	
+    	// 处理下级标签
     	var express='[if*='+scope+']';
     	$(express,element).each(function(){
-    		var exp=$(this).attr('if');
+    		process(this);
+    	});
+    	
+    	function process(target){
+    		var exp=$(target).attr('if');
+    		if(!exp){
+    			return;
+    		}
     		if(scope=='this'){
     			exp=exp.replace('this.','data.');
     			scope='data';
@@ -92,26 +151,40 @@
     		var ifFun=new Function(scope,'return '+exp);
     		var flag=ifFun.call($this,data);
     		if(!flag){
-    			$(this).remove();
+    			$(target).remove();
     		}else{
-    			$(this).removeAttr('if');
+    			$(target).removeAttr('if');
     		}
-    	});
+    	}
     	
     	return this;
     }
     
     UniTempl.prototype.runEach=function(element,scope,data){
     	var $this=this;
+    	
+    	// 处理当前标签
+    	process(element);
+    	
+    	// 处理下级标签
     	var express='[earch*='+scope+']';
     	$(express,element).each(function(){
-    		var exp=$(this).attr('earch').replace('this.','');
-    		$(this).removeAttr('earch');
+    		process(this);
+    	});
+    	
+    	
+    	function process(target){
+    		var exp=$(target).attr('earch');
+    		if(!exp){
+    			return;
+    		}
+    		exp=exp.replace('this.','')
+    		$(target).removeAttr('earch');
     		
     		var varname=exp.split(' ')[0];
     		var valname=exp.split(' ')[2];
     		if(!data[valname] || data[valname].length==0){
-    			$(this).remove();
+    			$(target).remove();
     			return;
     		}
     		
@@ -121,12 +194,13 @@
     				''+valname+'[i]._index=i;'+
     				'this.runIf(target,"'+varname+'",'+valname+'[i]);'+
     				'this.runWrite(target,"'+varname+'",'+valname+'[i]);'+
+    				'this.runAttr(target,"'+varname+'",'+valname+'[i]);'+
     				'this.runEach(target,"'+varname+'",'+valname+'[i]);'+
     			'}'
     		);
-    		eachFun.call($this,$(this),data[valname]);
-    		$(this).remove();
-    	});
+    		eachFun.call($this,$(target),data[valname]);
+    		$(target).remove();
+    	}
     	
     	return this;
     }
