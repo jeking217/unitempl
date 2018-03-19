@@ -1,0 +1,66 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UniTempl Demo</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<script src="jquery-1.12.4.js"></script>    
+<script src="jquery.loadTemplate.js"></script> 
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+		
+		var dataSize=500;
+		$('#testTitle').html('Demo4 '+dataSize+'条记录，进行中...');
+		$.ajax({
+			type:'GET',
+			url:'test/data-'+dataSize+'.json',
+			dataType:'json',
+			success:function(datas){
+				var begine=new Date().getTime();
+				
+				$("#testOut").loadTemplate("#template3", datas);
+				
+				var end=new Date().getTime();
+				$('#testTitle').html('Demo4 '+dataSize+'条记录，渲染'+dataSize+'条数据，耗时：'+(end-begine)/1000.0+'s');
+			}
+		});
+		
+	});
+
+</script>
+
+</head>
+
+<body >
+
+<script type="text/html" id="template3">
+<div sid="sid" index="index" >	
+	序号：<label data-content="index"></label><br/>
+	姓名：<label data-content="name"></label><br/>
+	年龄：<label data-content="age"></label>	<span style="margin-left:5px;" if="age>=18">成年人</span><br/>
+	邮箱：<label data-content="email"></label><br/>
+	电话：<label data-content="phone"></label><br/>
+	书籍：<ul><li data-content="books" data-format="nestedTemplateFormatter" data-format-options="#templateFrends"></ul>
+
+</div>
+</script>
+<script type="text/html" id="templateFrends">
+<li><label data-content="name"></label>&nbsp;&nbsp;<label data-content="price"></label></li>
+</script>
+<br/><br/>
+<hr>
+<h2 id="testTitle">Demo4 10000条记录</h2>
+<div id="testOut"></div>
+<hr>
+
+</body>
+
+</html>
+

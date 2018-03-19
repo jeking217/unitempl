@@ -1,0 +1,28 @@
+/*
+测试数据生成器：
+生成地址:http://www.yyyweb.com/demo/inner-show/json-generator.html
+生成模版:
+[
+  '{{repeat(10000)}}', 
+  {  
+	sid:'{{guid()}}',
+	index: '{{index()}}',
+	name:'{{firstName()}} {{surname()}}',
+	age:'{integer(20, 40)}}',
+	email: '{{email()}}',
+    phone: '+1 {{phone()}}',
+	frends:[
+	  '{{repeat(0,7)}}',
+      '{{lorem(1, "words")}}'
+	],
+	books:[
+	    '{{repeat(5,10)}}', 
+		{
+		name:'{{surname()}}',
+		price:'{{floating(1000, 4000, 2, "$0,0.00")}}',
+		publish:'{{company().toUpperCase()}}'
+		}
+	]
+  }
+]
+*/

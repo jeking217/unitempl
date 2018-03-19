@@ -50,6 +50,24 @@
 		
 		//alert($('[attr-sid]',$('#template')).length);
 		//alert($(':contains(this.)',$('#demo4')).length);
+		var dataSize=500;
+		$('#testTitle').html('Demo4 '+dataSize+'条记录，进行中...');
+		$.ajax({
+			type:'GET',
+			url:'test/data-'+dataSize+'.json',
+			dataType:'json',
+			success:function(datas){
+				var begine=new Date().getTime();
+				
+				for(var i in datas){
+					var data=datas[i];
+					$('#template3').UniTempl(data).to('#testOut');
+				}
+				
+				var end=new Date().getTime();
+				$('#testTitle').html('Demo4 '+dataSize+'条记录，渲染'+dataSize+'条数据，耗时：'+(end-begine)/1000.0+'s');
+			}
+		});
 		
 	});
 
@@ -73,7 +91,23 @@
 	年龄：<label content="this.age"></label>	<span style="margin-left:5px;" if="this.age>=18">成年人</span><br/>
 	性别：<label content="this.sex"></label><br/>
 	爱好：<ul><li earch="item in this.likes"><label content="item"></label></li></ul>
-	
+	书籍：<ul>
+			<li earch="book in this.books">
+				序号:<label content="book._index"></label>&nbsp;&nbsp;
+				书名：<label content="book.name"></label>&nbsp;&nbsp;
+				价格：<label content="book.price"></label>&nbsp;&nbsp; <label if="book.price>50" style="color:red;">好贵啊</label>
+				出版社：<label content="book.publish"></label>
+			</li>
+		</ul>
+</div>
+</script>
+<script type="text/html" id="template3">
+<div sid="user.sid" index="this.index" >	
+	序号：<label content="this.index"></label><br/>
+	姓名：<label content="this.name"></label><br/>
+	年龄：<label content="this.age"></label>	<span style="margin-left:5px;" if="this.age>=18">成年人</span><br/>
+	邮箱：<label content="this.email"></label><br/>
+	电话：<label content="this.phone"></label><br/>
 	书籍：<ul>
 			<li earch="book in this.books">
 				序号:<label content="book._index"></label>&nbsp;&nbsp;
@@ -86,12 +120,18 @@
 </script>
 <br/><br/>
 <hr>
+<h2>Demo1</h2>
 <div id="demo1"></div>
 <hr>
+<h2>Demo2</h2>
 <div id="demo2"></div>
 <hr>
+<h2>Demo3</h2>
 <div id="demo3"></div>
-
+<hr>
+<h2 id="testTitle">Demo4 10000条记录</h2>
+<div id="testOut"></div>
+<hr>
 
 </body>
 
